@@ -244,6 +244,28 @@ ac_hardware_specific_bullets:
 
 ---
 
+## `output_paths`
+
+Required mapping that tells `generate.py` where to write the rendered SKILL.md files. Paths are interpreted **relative to `--repo-root`** (which defaults to the current working directory).
+
+Fields:
+
+| Key | Required | Type | Meaning |
+|-----|----------|------|---------|
+| `leader` | yes | string | Output path for the rendered `leader` skill (typically `.claude/skills/leader/SKILL.md`). |
+| `dev_workflow` | yes | string | Output path for the rendered `dev-workflow` skill (typically `.claude/skills/dev-workflow/SKILL.md`). |
+
+Example:
+```yaml
+output_paths:
+  leader: .claude/skills/leader/SKILL.md
+  dev_workflow: .claude/skills/dev-workflow/SKILL.md
+```
+
+`generate.py` will create any missing parent directories before writing.
+
+---
+
 ## Minimal required keys
 
-The smallest valid `values.yaml` includes every scalar and every list (even if empty) plus all flags (which can default to `false`). See the examples for fully populated values.
+The smallest valid `values.yaml` includes every scalar and every list (even if empty), all flags (which can default to `false`), and the `output_paths` mapping. See the examples for fully populated values.

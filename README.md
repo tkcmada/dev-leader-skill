@@ -28,6 +28,8 @@ The templates here capture the **canonical** structure of both skills:
 | `values.schema.md` | Documentation of every placeholder: required/optional, type, meaning, example. |
 | `examples/tanecon.values.yaml` | Sample values for the `tanecon2027` project. |
 | `examples/tottori.values.yaml` | Sample values for the `tottori-rover-2026` project. |
+| `generate.py` | Renderer script that turns a `values.yaml` into the two SKILL.md files. |
+| `requirements.txt` | Python runtime dependencies (`jinja2`, `pyyaml`) used by `generate.py`. |
 
 ## How to use
 
@@ -38,7 +40,31 @@ The intended consumer workflow is:
 3. **Render the templates** with a Jinja2 renderer (provided by the `leader-generate` skill, implemented in a separate story) into `.claude/skills/leader/SKILL.md` and `.claude/skills/dev-workflow/SKILL.md`.
 4. **Commit the rendered SKILL.md** files alongside the submodule pointer so the skills are usable without a render step at runtime.
 
-The renderer itself is out of scope for this repository — this repo only ships templates, schema, and examples.
+The renderer (`generate.py`) ships in this repo — see "How to generate" below.
+
+## How to generate
+
+Install dependencies once:
+
+```bash
+pip install -r requirements.txt
+```
+
+Render the skills into your project (run from the consuming project's root, after this repo has been added as a submodule under e.g. `.claude/skills/dev-leader-skill/`):
+
+```bash
+python .claude/skills/dev-leader-skill/generate.py \
+    --values .claude/skills/dev-leader-skill-values.yaml \
+    --repo-root .
+```
+
+Flags:
+
+- `--values <path>` (required): path to your project's `values.yaml`.
+- `--repo-root <path>` (optional, defaults to `.`): base directory that `output_paths` are resolved against.
+- `--template-dir <path>` (optional, defaults to the directory of `generate.py`): where the `.template.md` files live.
+
+Outputs are written to the paths configured in the `output_paths` section of your `values.yaml` (see `values.schema.md`). `generate.py` runs Jinja2 with `StrictUndefined`, so any missing key in `values.yaml` will produce an explicit error instead of a silent blank.
 
 ## Conventions
 

@@ -148,3 +148,12 @@ status_labels:
 
 ac_hardware_specific_bullets:
   - "Firmware change: ATmega or AtomS3 runs without resetting"
+
+# --- Output paths ------------------------------------------------------------
+#
+# Where `generate.py` writes the rendered SKILL.md files, relative to the
+# consuming project's repo root (passed via --repo-root).
+
+output_paths:
+  leader: .claude/skills/leader/SKILL.md
+  dev_workflow: .claude/skills/dev-workflow/SKILL.md

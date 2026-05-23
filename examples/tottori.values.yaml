@@ -173,3 +173,12 @@ ac_hardware_specific_bullets:
   - "Service starts and stays up (`is-active` confirmed)"
   - "Firmware change: main loop completes within WDT timeout"
   - "Firmware change: recovery behavior after a WDT fire is defined"
+
+# --- Output paths ------------------------------------------------------------
+#
+# Where `generate.py` writes the rendered SKILL.md files, relative to the
+# consuming project's repo root (passed via --repo-root).
+
+output_paths:
+  leader: .claude/skills/leader/SKILL.md
+  dev_workflow: .claude/skills/dev-workflow/SKILL.md
