@@ -1,0 +1,175 @@
+# tottori-rover-2026 values for dev-leader-skill templates.
+#
+# Renders `leader.template.md` and `dev-workflow.template.md` into
+# tkcmada/tottori-rover-2026 .claude/skills/{leader,dev-workflow}/SKILL.md.
+#
+# Note: values reflect the post-migration target (`type:story` label,
+# `epic-story` hierarchy) as planned in tanecon2027#12, not the historical
+# `type:dev` / `flat-dev` state.
+
+# --- Scalars -----------------------------------------------------------------
+
+project_name: tottori-rover-2026
+project_display_name: tottori-rover-2026
+repo_slug: tkcmada/tottori-rover-2026
+story_label: "type:story"
+push_branch: main
+remote_exec_prefix: ""
+repo_path: "~/tottori-rover-2026"
+ticket_hierarchy: epic-story
+
+leader_description: >-
+  Software development lead persona for tottori-rover-2026 project. Invoked
+  by 'hi, leader' (or 'hi leader', 'hey leader'). Runs a standup briefing,
+  manages project memory (daily logs, tasks, decisions, notes), and
+  orchestrates existing agents autonomously. Does NOT write code itself.
+
+dev_workflow_description: >-
+  Standard development workflow for tottori-rover-2026 (type:story). Defines
+  a two-layer epic/story ticket hierarchy and a 6-stage story flow (file
+  ticket → refinement → AC gate → automated implementation → QA → close),
+  with AC perspectives, [3.5]-approval = commit/push permission, and OpenSpec
+  ordering.
+
+# --- Flags -------------------------------------------------------------------
+
+retrospectives_enabled: true
+wrap_up_enabled: true
+bye_enabled: true
+recognition_phrases_enabled: true
+openspec_enabled: true
+notification_enabled: true
+qa_skill_ref_enabled: true
+
+# --- Lists -------------------------------------------------------------------
+
+available_agents:
+  - name: general-purpose
+    best_for: Investigation, shell commands, bug fixes, multi-step implementation
+  - name: Explore
+    best_for: Read-only codebase search — finding files, symbols, references
+  - name: claude-code-guide
+    best_for: Claude Code CLI features, API usage, SDK questions
+  - name: delivery-manager
+    best_for: Driving a GitHub issue through its full lifecycle
+  - name: product-manager
+    best_for: Turning feature requests into GitHub issues
+  - name: story-analyzer
+    best_for: Formalizing a user story and filing it as an issue
+  - name: openspec-apply
+    best_for: Implementing an existing OpenSpec proposal
+  - name: issue-proposal-driver
+    best_for: Turning a GitHub issue into an OpenSpec proposal
+  - name: ux-spec-designer
+    best_for: UI/UX design spec for a story or issue
+
+recognition_phrases:
+  - phrase: add epic ticket
+    action: >-
+      Create a `type:epic` + `status:open` issue (a coarse goal statement is
+      enough at creation time). See [[dev-workflow]] "Ticket hierarchy:
+      epic / story".
+  - phrase: epic to story
+    action: >-
+      Brainstorm with the user to refine the target epic (Goal / Use Case /
+      Failure Scenario & Edge Cases / Architecture / Acceptance Criteria) and
+      file one or more `type:story` issues once enough information is gathered.
+      See [[dev-workflow]].
+  - phrase: wrap up
+    action: >-
+      Wrap up the session with the user still present. See "Session Wrap Up"
+      below.
+  - phrase: good bye / bye
+    action: >-
+      End the session. Runs autonomously assuming the user is gone. See
+      "Good Bye — End of Session" below.
+  - phrase: retrospective / retro
+    action: >-
+      Run the retrospective step standalone. See "Retrospective — Review and
+      Improve" below.
+
+memory_dirs:
+  - name: daily
+    file_pattern: index.md + YYYY-MM-DD.md
+    purpose: daily work logs
+  - name: decisions
+    file_pattern: index.md + decision-NNN.md
+    purpose: ADRs
+  - name: notes
+    file_pattern: index.md + <topic>.md
+    purpose: living reference notes
+  - name: retrospectives
+    file_pattern: index.md + YYYY-MM-DD.md
+    purpose: session retrospectives
+
+applicable_subsystems:
+  - Writing / modifying code (Python, C/C++ firmware, shell, etc.)
+  - Changing hardware-control code (ATmega firmware, PiHAT, I2C, UART, etc.)
+  - Configuring / integrating MCP servers or external tools
+  - Creating or significantly modifying skills (SKILL.md) or agent definitions
+  - Modifying existing automation flows
+  - Investigating / fixing bugs
+
+subsystem_labels:
+  - "subsystem:fw"
+  - "subsystem:host"
+
+user_story_actors:
+  - Toku
+  - Rover operator
+  - leader
+
+hardware_verification_examples:
+  - I2C
+  - WDT
+  - encoder
+
+hardware_safety_targets:
+  - AD3
+  - PiHAT
+  - UART3
+
+qa_verification_methods:
+  - method: File / code review
+    example: "`git diff` to confirm the change matches intent"
+  - method: Static check
+    example: "`python3 -c \"import ast; ast.parse(open('x.py').read())\"`, compile check"
+  - method: Service impact check
+    example: "`systemctl --user restart <service>` → `is-active` → recent log check"
+  - method: Hardware behavior check
+    example: "Run `python3 raspi_test_PiHAT.py` for a fixed duration and confirm reg19/reg22/encoder"
+  - method: Behavior check
+    example: Execute a command end-to-end, call an MCP tool
+  - method: Output comparison
+    example: Compare journalctl / output file against expected
+
+related_resources:
+  - name: Main skill
+    ref: "[[leader]] (within SKILL.md, see the story-type task handling section)"
+  - name: Story refinement
+    ref: "[[make-story-ticket]] (handed off to dev-workflow once confirmed)"
+  - name: QA checklist
+    ref: "[[qa-testing]] (firmware / I2C / encoder viewpoints)"
+  - name: GitHub Issues
+    ref: "tkcmada/tottori-rover-2026"
+  - name: GitHub CLI
+    ref: "`gh` on pi4 (authenticated as tkcmada)"
+  - name: OpenSpec
+    ref: "`@/openspec/AGENTS.md` — large changes start with a proposal"
+
+status_labels:
+  - label: "status:done"
+    emoji: "✅"
+  - label: "status:open"
+    emoji: "📋"
+  - label: "status:in-progress"
+    emoji: "🔄"
+  - label: "status:blocked"
+    emoji: "🚫"
+  - label: "status:action_required"
+    emoji: "⚠️"
+
+ac_hardware_specific_bullets:
+  - "Service starts and stays up (`is-active` confirmed)"
+  - "Firmware change: main loop completes within WDT timeout"
+  - "Firmware change: recovery behavior after a WDT fire is defined"
