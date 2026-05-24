@@ -27,9 +27,9 @@ All leader memory lives under `{{ repo_path }}/memory/`:
 
 ```
 memory/
-{% for dir in memory_dirs -%}
+{%- for dir in memory_dirs %}
   {{ "%-15s"|format(dir.name + "/") }} {{ dir.file_pattern }}   ← {{ dir.purpose }}
-{% endfor -%}
+{%- endfor %}
 ```
 
 **Tasks are NOT stored as files.** All tasks/issues live in GitHub Issues (`{{ repo_slug }}`). Use `{{ remote_exec_prefix }}gh issue list --repo {{ repo_slug }}` to query them.
