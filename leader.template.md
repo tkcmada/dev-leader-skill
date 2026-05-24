@@ -70,6 +70,12 @@ GitHub Issues labeled `{{ story_label }}` are **always processed by the [[dev-wo
    - **Open issues**: table with numbers, status labels, titles (use `{{ remote_exec_prefix }}gh issue view <num> --repo {{ repo_slug }}` for any in-progress issue).
    - **Recent decisions**: any from the last week worth noting.
 {% if retrospectives_enabled %}   - **Retrospective report**: summarize the unreported retrospective's good points / improvements / Action Items for the user. After reporting, update the "reported" column for that row in `memory/retrospectives/index.md`.
+   - **Retrospective proposals — adoption review**: After briefing the user, walk through each pending Proposal (R-1, R-2 ...) recorded in the retrospective file. For each, present the proposed fix and ask the user one of: **accept / reject / defer**.
+     - **accept**: apply the fix in this session. Small (a few lines in one skill/SKILL.md) → edit in place and route through the commit/push gate. Large → file a `{{ story_label }}` issue and start [[dev-workflow]] refinement.
+     - **reject**: mark the proposal closed with a one-line reason in the retro file.
+     - **defer**: leave the proposal `pending`; it will re-surface in the next standup.
+     - Update the proposal's `status:` line in `memory/retrospectives/YYYY-MM-DD.md` accordingly.
+     - After all proposals are processed, update the `Adoption` column in `memory/retrospectives/index.md` (format: `N/M adopted (K deferred, J rejected)`).
 {% endif %}{% if bye_enabled %}   - **Carry-over items (needs confirmation)**: surface anything the previous session's "good bye" recorded under "carry-over (needs confirmation)" (e.g. uncommitted changes pending approval).
 {% endif %}{% if retrospectives_enabled or bye_enabled %}8.{% else %}7.{% endif %} Apply priority heuristics and give a **concrete recommendation** — which issue, and why.
    Do not ask an open-ended question. Suggest first; let the user redirect.
@@ -109,25 +115,32 @@ Review the session and propose concrete improvements to the leader / dev-workflo
 
 ### Output format
 
-For each finding, output one of:
+For each finding, output a Proposal with a unique ID (R-1, R-2, ...) and one of:
 
-> **Routing fix** — Change `<agent>` routing rule: [proposed diff to Agent Routing table]
+> **R-N — Routing fix** — Change `<agent>` routing rule: [proposed diff]
+> Status: pending
 
-> **Skill fix** — In `.claude/skills/<name>/SKILL.md`, update [section]: [proposed change]
+> **R-N — Skill fix** — In `.claude/skills/<name>/SKILL.md`, update [section]: [proposed change]
+> Status: pending
 
-> **Process fix** — Add/change [leader behavior rule]: [proposed change]
+> **R-N — Process fix** — Add/change [leader behavior rule]: [proposed change]
+> Status: pending
 
-> **No change needed** — [explain why this session went smoothly]
+> **R-N — No change needed** — [explain why this session went smoothly]
+> Status: n/a
 
-Then record the retrospective to `memory/retrospectives/YYYY-MM-DD.md` (use `date +%Y-%m-%d`). The file captures:
+Then record the retrospective to `memory/retrospectives/YYYY-MM-DD.md`. Each Proposal is captured under a `## Proposals` section with its current status. The next standup walks through pending Proposals and asks the user to accept / reject / defer (see Standup step above).
+
+The file captures:
 
 - **Good points** — what went well
 - **Improvements** — what could be better
 - **Process / skill issues** — workflow or skill-definition problems
+- **Proposals** — each finding as R-N with a status line (pending / accepted / rejected / deferred / n/a)
 - **Action Items** — concrete actions to try next session
 - **Carry-over (needs confirmation)** — items awaiting user confirmation (e.g. commit approval); surfaced in tomorrow's standup
 
-Add a row to `memory/retrospectives/index.md` (columns: Date / Summary / Reported). Leave "Reported" blank — the next standup fills it in after briefing the user.
+Add a row to `memory/retrospectives/index.md` (columns: Date / Summary / Reported / Adoption). Leave "Reported" and "Adoption" blank — the next standup fills them in after briefing the user and walking through the Proposals.
 
 ### What NOT to flag
 
@@ -314,6 +327,13 @@ updated: YYYY-MM-DD
 
 ## Process / skill issues
 
+## Proposals
+<!-- Each finding from the Retrospective trigger goes here as R-N with a status line. -->
+<!-- Example:
+- **R-1 — Skill fix** — In `.claude/skills/leader/SKILL.md`, ... [proposed change]
+  - status: pending
+-->
+
 ## Action Items
 - [ ] ...
 
@@ -330,5 +350,5 @@ Tasks/issues — stored in GitHub Issues, query with `{{ remote_exec_prefix }}gh
 
 `memory/notes/index.md` — `| Topic | Updated | Summary |`
 {% if retrospectives_enabled %}
-`memory/retrospectives/index.md` — `| Date | Summary | Reported |` (newest first)
+`memory/retrospectives/index.md` — `| Date | Summary | Reported | Adoption |` (newest first)
 {% endif %}
