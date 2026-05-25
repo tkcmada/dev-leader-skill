@@ -8,7 +8,7 @@ Every placeholder referenced in either template is documented here. The categori
 - **Flags** — booleans gating `{% if %}` blocks.
 - **Lists** — iterated via `{% for %}`. Each row's expected fields are documented.
 
-Two ready-to-copy examples live under `examples/tanecon.values.yaml` and `examples/tottori.values.yaml`.
+A ready-to-copy, full-featured example lives under `examples/example.values.yaml`.
 
 ---
 
@@ -16,23 +16,23 @@ Two ready-to-copy examples live under `examples/tanecon.values.yaml` and `exampl
 
 | Key | Required | Type | Meaning | Example |
 |-----|----------|------|---------|---------|
-| `project_name` | yes | string | Short project slug used in commit notification titles etc. | `tanecon2027` |
-| `project_display_name` | yes | string | Human-friendly project name used in headings and intro text. | `tanecon2027 BBM` |
-| `repo_slug` | yes | string | `owner/name` of the GitHub repo where issues live. | `tkcmada/tanecon2027` |
+| `project_name` | yes | string | Short project slug used in commit notification titles etc. | `acme-rover` |
+| `project_display_name` | yes | string | Human-friendly project name used in headings and intro text. | `Acme Rover` |
+| `repo_slug` | yes | string | `owner/name` of the GitHub repo where issues live. | `acme-corp/rover` |
 | `story_label` | yes | string | The label that marks an issue as an implementation story. Historically `type:dev`; new projects should standardize on `type:story`. | `type:story` |
 | `push_branch` | yes | string | The branch the dev-workflow pushes to at [6]. | `main` |
-| `remote_exec_prefix` | yes | string | Prefix prepended to every `gh` / `git` command. Empty string when running locally; e.g. `ssh pi4 'cd ~/<repo> && ` when commands must be run on another host. Note: when non-empty, callers must close the quote themselves at the end of the command. | `""` |
-| `repo_path` | yes | string | Absolute or `~`-relative path to the project repo on the runtime host. | `~/tanecon2027` |
+| `remote_exec_prefix` | yes | string | Prefix prepended to every `gh` / `git` command. Empty string when running locally; e.g. `ssh myhost 'cd ~/<repo> && ` when commands must be run on another host. Note: when non-empty, callers must close the quote themselves at the end of the command. | `""` |
+| `repo_path` | yes | string | Absolute or `~`-relative path to the project repo on the runtime host. | `~/acme-rover` |
 | `ticket_hierarchy` | yes | enum | One of `epic-story` (two layers: epic → story) or `flat-dev` (single implementation layer). | `epic-story` |
-| `leader_description` | yes | string | The `description:` frontmatter line for the rendered leader SKILL.md. | `Software development lead persona for tanecon2027 BBM project. ...` |
-| `dev_workflow_description` | yes | string | The `description:` frontmatter line for the rendered dev-workflow SKILL.md. | `Standard development workflow for tanecon2027 BBM (type:story). ...` |
+| `leader_description` | yes | string | The `description:` frontmatter line for the rendered leader SKILL.md. | `Software development lead persona for Acme Rover project. ...` |
+| `dev_workflow_description` | yes | string | The `description:` frontmatter line for the rendered dev-workflow SKILL.md. | `Standard development workflow for Acme Rover (type:story). ...` |
 
 ### Notes on scalars
 
 - `story_label` and `ticket_hierarchy` are independent: a project may use `epic-story` hierarchy with a `type:story` label, or `flat-dev` with `type:dev`. Templates branch on each separately.
 - `remote_exec_prefix` is **concatenated literally** in front of commands. If non-empty, it must include the opening quote/escape syntax and the caller is responsible for the closing quote — typical patterns:
   - Local execution: `""` (empty).
-  - Remote via SSH: `"ssh pi4 'cd ~/tottori-rover-2026 && "` (note the trailing space and unclosed quote intentionally absorbed by surrounding text in the template if appropriate). Projects that prefer to render strictly closed shell commands should keep `remote_exec_prefix` empty and run the renderer where commands execute.
+  - Remote via SSH: `"ssh myhost 'cd ~/acme-rover && "` (note the trailing space and unclosed quote intentionally absorbed by surrounding text in the template if appropriate). Projects that prefer to render strictly closed shell commands should keep `remote_exec_prefix` empty and run the renderer where commands execute.
 
 ---
 
@@ -200,7 +200,7 @@ related_resources:
   - name: Main skill
     ref: "[[leader]]"
   - name: GitHub Issues
-    ref: tkcmada/tanecon2027
+    ref: acme-corp/rover
 ```
 
 ### `status_labels`

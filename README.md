@@ -6,17 +6,12 @@ This repository provides the source of truth for the `leader` and `dev-workflow`
 
 ## Why this repo exists
 
-Multiple dev projects (initially `tkcmada/tanecon2027` and `tkcmada/tottori-rover-2026`) historically maintained their own forks of the same `leader` / `dev-workflow` skills. Drift between the forks made every improvement a copy-paste exercise.
+Dev projects that adopt the `leader` / `dev-workflow` skill pair historically maintained their own forks of the same SKILL.md bodies. Drift between forks made every improvement a copy-paste exercise.
 
 The templates here capture the **canonical** structure of both skills:
 
 - Common sections (Persona, Orchestrator Constraint, Priority Heuristics, Recommendation Format, file formats, the 6-stage dev-workflow diagram, AC quality bar, etc.) live in one place.
 - Project-specific differences (repo slug, branch name, ticket hierarchy, available agents, hardware verification examples, optional features such as Pushover notifications or OpenSpec integration) are abstracted into Jinja2 placeholders and `{% if %}` / `{% for %}` blocks.
-
-## Related projects
-
-- [`tkcmada/tanecon2027`](https://github.com/tkcmada/tanecon2027) — 種コン2027 BBM project
-- [`tkcmada/tottori-rover-2026`](https://github.com/tkcmada/tottori-rover-2026) — tottori-rover-2026 project
 
 ## Layout
 
@@ -26,8 +21,7 @@ The templates here capture the **canonical** structure of both skills:
 | `leader.template.md` | Jinja2 template for the `leader` skill (English). |
 | `dev-workflow.template.md` | Jinja2 template for the `dev-workflow` skill (English). |
 | `values.schema.md` | Documentation of every placeholder: required/optional, type, meaning, example. |
-| `examples/tanecon.values.yaml` | Sample values for the `tanecon2027` project. |
-| `examples/tottori.values.yaml` | Sample values for the `tottori-rover-2026` project. |
+| `examples/example.values.yaml` | Generic, full-featured sample values (all optional flags ON) that doubles as a render-test fixture. |
 | `generate.py` | Renderer script that turns a `values.yaml` into the two SKILL.md files. |
 | `requirements.txt` | Python runtime dependencies (`jinja2`, `pyyaml`) used by `generate.py`. |
 
@@ -36,7 +30,7 @@ The templates here capture the **canonical** structure of both skills:
 The intended consumer workflow is:
 
 1. **Add this repo as a submodule** in your project, e.g. under `.claude/skills/_shared/dev-leader-skill/`.
-2. **Author a `values.yaml`** for your project, following `values.schema.md`. The `examples/` directory shows full, working values files you can copy and edit.
+2. **Author a `values.yaml`** for your project, following `values.schema.md`. Copy `examples/example.values.yaml` as a starting point — it exercises every optional flag and list — and edit the values to match your repo.
 3. **Render the templates** with a Jinja2 renderer (provided by the `leader-generate` skill, implemented in a separate story) into `.claude/skills/leader/SKILL.md` and `.claude/skills/dev-workflow/SKILL.md`.
 4. **Commit the rendered SKILL.md** files alongside the submodule pointer so the skills are usable without a render step at runtime.
 
